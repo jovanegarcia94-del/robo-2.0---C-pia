@@ -207,5 +207,3 @@ def logout():
     email = session.pop("user_email", None)
     if email in USERS: USERS.pop(email) # Remove a conexão do servidor ao sair
     return redirect("/")
-
-

@@ -2,147 +2,149 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Sniper Bot Pro | Glass Edition</title>
+    <title>Extoj Sniper | Pro Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { 
             --bg-dark: #0b0e11; 
-            --glass-bg: rgba(24, 26, 32, 0.7); /* Fundo semi-transparente */
+            --glass-bg: rgba(24, 26, 32, 0.75);
             --accent: #f0b90b; 
         }
 
         body { 
-            background: radial-gradient(circle at top right, #1a1d23, #0b0e11); /* Gradiente para destacar o blur */
+            background: radial-gradient(circle at top right, #1a1d23, #0b0e11);
             color: #eaecef; 
             font-family: 'Inter', sans-serif; 
-            overflow-x: hidden;
             min-height: 100vh;
         }
 
-        /* Efeito Vidro Embaçado (Glassmorphism) */
-        .glass-effect {
+        .glass {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px); /* O segredo do desfoque */
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            border-radius: 16px;
         }
 
         .sidebar { 
-            width: 260px; 
+            width: 280px; 
             height: 100vh;
             position: fixed; 
             padding: 25px;
             z-index: 100;
+            overflow-y: auto;
         }
 
-        .main-content { margin-left: 260px; padding: 30px; }
-
-        .stat-card { padding: 20px; text-align: center; }
-        .stat-value { font-size: 1.8rem; font-weight: bold; color: var(--accent); }
-
-        .monitor-area { 
-            background: rgba(0, 0, 0, 0.3); 
-            border-radius: 12px; 
-            padding: 40px; 
-            margin: 20px 0;
-            border: 1px solid rgba(240, 185, 11, 0.2);
-        }
+        .main-content { margin-left: 280px; padding: 30px; }
 
         .form-control-custom { 
             background: rgba(255, 255, 255, 0.05) !important; 
             border: 1px solid rgba(255, 255, 255, 0.1) !important; 
             color: white !important; 
-            margin-bottom: 12px; 
+            margin-bottom: 12px;
+            font-size: 0.9rem;
         }
 
-        .btn-warning { background: var(--accent); border: none; font-weight: bold; color: black; transition: 0.3s; }
-        .btn-warning:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(240, 185, 11, 0.3); }
+        .stat-card { padding: 20px; text-align: center; }
+        .stat-value { font-size: 1.6rem; font-weight: bold; color: var(--accent); }
+
+        .monitor-area { 
+            background: rgba(0, 0, 0, 0.3); 
+            border-radius: 12px; 
+            padding: 40px; 
+            border-left: 4px solid var(--accent);
+        }
     </style>
 </head>
 <body>
 
-<div class="sidebar glass-effect">
-    <h4 class="text-warning mb-4"><i class="fas fa-crosshairs me-2"></i>SNIPER BOT</h4>
+<div class="sidebar glass">
+    <h4 class="text-warning mb-4"><i class="fas fa-crosshairs me-2"></i>EXTOJ SNIPER</h4>
     
-    <label class="small text-muted mb-1">ESTRATÉGIA ALVO</label>
+    <label class="small text-muted mb-1">ESTRATÉGIA</label>
     <select id="estrategia_selecionada" class="form-select form-control-custom">
-        <option value="MHI" {% if config.estrategia_selecionada == 'MHI' %}selected{% endif %}>MHI</option>
-        <option value="Torres Gêmeas" {% if config.estrategia_selecionada == 'Torres Gêmeas' %}selected{% endif %}>Torres Gêmeas</option>
-        <option value="MHI M5" {% if config.estrategia_selecionada == 'MHI M5' %}selected{% endif %}>MHI M5</option>
+        <option value="MHI">MHI</option>
+        <option value="Torres Gêmeas">Torres Gêmeas</option>
+        <option value="MHI M5">MHI M5</option>
     </select>
 
-    <label class="small text-muted mb-1">ENTRADA ($)</label>
-    <input type="number" id="valor_entrada" class="form-control form-control-custom" value="{{config.valor_entrada}}">
+    <label class="small text-muted mb-1">VALOR ENTRADA ($)</label>
+    <input type="number" id="valor_entrada" class="form-control form-control-custom" value="2.0">
     
     <div class="row g-2">
         <div class="col-6">
             <label class="small text-muted mb-1">STOP WIN</label>
-            <input type="number" id="stop_win" class="form-control form-control-custom" value="{{config.stop_win}}">
+            <input type="number" id="stop_win" class="form-control form-control-custom" value="10.0">
         </div>
         <div class="col-6">
             <label class="small text-muted mb-1">STOP LOSS</label>
-            <input type="number" id="stop_loss" class="form-control form-control-custom" value="{{config.stop_loss}}">
+            <input type="number" id="stop_loss" class="form-control form-control-custom" value="10.0">
         </div>
     </div>
 
-    <button onclick="salvar()" class="btn btn-warning w-100 mt-2">SALVAR CONFIGS</button>
-    <hr class="my-4 text-secondary">
-    <div class="d-grid gap-2">
-        <button onclick="fetch('/start')" class="btn btn-success fw-bold py-2">INICIAR ROBÔ</button>
-        <button onclick="fetch('/stop')" class="btn btn-danger fw-bold py-2">PARAR ROBÔ</button>
+    <hr class="border-secondary opacity-25">
+    
+    <label class="small text-muted mb-1">MARTINGALE</label>
+    <select id="usar_martingale" class="form-select form-control-custom">
+        <option value="S">Ativado</option>
+        <option value="N">Desativado</option>
+    </select>
+
+    <div class="row g-2">
+        <div class="col-6">
+            <label class="small text-muted mb-1">NÍVEIS</label>
+            <input type="number" id="niveis_martingale" class="form-control form-control-custom" value="1">
+        </div>
+        <div class="col-6">
+            <label class="small text-muted mb-1">FATOR</label>
+            <input type="number" step="0.1" id="fator_martingale" class="form-control form-control-custom" value="2.2">
+        </div>
     </div>
-    <a href="/logout" class="btn btn-outline-light btn-sm w-100 mt-5">Sair</a>
+
+    <button onclick="salvar()" class="btn btn-warning w-100 mt-2 fw-bold">SALVAR CONFIGS</button>
+    
+    <div class="d-grid gap-2 mt-4">
+        <button onclick="fetch('/start')" class="btn btn-success fw-bold">INICIAR ROBÔ</button>
+        <button onclick="fetch('/stop')" class="btn btn-danger fw-bold">PARAR ROBÔ</button>
+    </div>
 </div>
 
 <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="text-white-50">Terminal Operacional Sniper</h5>
-        <div id="badge-rodando" class="badge bg-secondary p-2 px-3">SISTEMA OFFLINE</div>
+        <h5 class="text-white-50">Painel Operacional</h5>
+        <div id="badge-rodando" class="badge bg-secondary p-2 px-3">OFFLINE</div>
     </div>
 
     <div class="row g-3 mb-4">
         <div class="col-md-4">
-            <div class="glass-effect stat-card">
-                <div class="small text-muted">SALDO CORRETORA</div>
-                <div class="stat-value" id="txt-saldo">$ {{saldo}}</div>
+            <div class="glass stat-card">
+                <div class="small text-muted">SALDO ATUAL</div>
+                <div class="stat-value" id="txt-saldo">$ 0.00</div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="glass-effect stat-card">
+            <div class="glass stat-card">
                 <div class="small text-muted">LUCRO SESSÃO</div>
-                <div class="stat-value" id="txt-lucro">$ {{lucro}}</div>
+                <div class="stat-value" id="txt-lucro">$ 0.00</div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="glass-effect stat-card">
-                <div class="small text-muted">ASSERTIVIDADE</div>
+            <div class="glass stat-card">
+                <div class="small text-muted">WIN RATE</div>
                 <div class="stat-value text-info" id="txt-winrate">0%</div>
             </div>
         </div>
     </div>
 
-    <div class="glass-effect p-4">
+    <div class="glass p-4">
         <div class="d-flex justify-content-between mb-3">
-            <h6 class="text-muted"><i class="fas fa-microchip me-2 text-warning"></i>ESTADO DO MOTOR</h6>
+            <h6 class="text-muted">STATUS DO SISTEMA</h6>
             <span id="txt-ativo" class="fw-bold text-warning">---</span>
         </div>
-        
-        <div class="monitor-area d-flex flex-column justify-content-center align-items-center text-center">
-            <div id="bot-status" class="display-6 fw-bold mb-3">Aguardando Início...</div>
-            <div id="txt-ultima" class="text-white-50 small bg-dark p-2 rounded">Aguardando sinal conforme lógica Sniper</div>
-        </div>
-
-        <div class="row mt-4 text-center">
-            <div class="col-6 border-end border-secondary">
-                <div class="small text-muted">ESTRATÉGIA SELECIONADA</div>
-                <div class="fw-bold h5 mb-0" id="txt-estrategia">-</div>
-            </div>
-            <div class="col-6">
-                <div class="small text-muted">SISTEMA</div>
-                <div class="fw-bold h5 mb-0 text-info">GALE PRÓX. VELA</div>
-            </div>
+        <div class="monitor-area text-center">
+            <div id="bot-status" class="display-6 fw-bold mb-3">Aguardando...</div>
+            <div id="txt-ultima" class="text-white-50 small">Nenhuma operação realizada nesta sessão.</div>
         </div>
     </div>
 </div>
@@ -153,27 +155,26 @@
             valor_entrada: document.getElementById('valor_entrada').value,
             stop_win: document.getElementById('stop_win').value,
             stop_loss: document.getElementById('stop_loss').value,
-            usar_martingale: "S",
+            usar_martingale: document.getElementById('usar_martingale').value,
+            niveis_martingale: document.getElementById('niveis_martingale').value,
+            fator_martingale: document.getElementById('fator_martingale').value,
             estrategia_selecionada: document.getElementById('estrategia_selecionada').value
         };
         fetch('/salvar_config', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(d)
-        }).then(() => alert("✅ Configurações e Estratégia Atualizadas!"));
+        }).then(() => alert("✅ Configurações de Martingale e Estratégia Salvas!"));
     }
 
     setInterval(() => {
         fetch('/status').then(r => r.json()).then(d => {
             document.getElementById('txt-saldo').innerText = "$ " + d.saldo.toFixed(2);
             document.getElementById('txt-lucro').innerText = "$ " + d.lucro.toFixed(2);
-            document.getElementById('txt-lucro').className = d.lucro >= 0 ? "stat-value text-success" : "stat-value text-danger";
             document.getElementById('bot-status').innerText = d.status;
             document.getElementById('txt-ultima').innerText = d.ultima;
             document.getElementById('txt-winrate').innerText = d.winrate;
             document.getElementById('txt-ativo').innerText = d.ativo;
-            document.getElementById('txt-estrategia').innerText = d.estrategia;
-            
             const badge = document.getElementById('badge-rodando');
             badge.innerText = d.rodando ? "EXECUTANDO" : "PAUSADO";
             badge.className = d.rodando ? "badge bg-success p-2 px-3" : "badge bg-secondary p-2 px-3";
